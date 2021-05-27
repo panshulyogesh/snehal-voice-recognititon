@@ -12,6 +12,7 @@ import {
 
 import Voice from '@react-native-voice/voice';
 
+
 //import {Permission, PERMISSION_TYPE} from './src/App_permission';
 import {readfile, compareString} from './src/Files';
 
@@ -25,6 +26,7 @@ const App = () => {
   const [started, setStarted] = useState('');
   const [results, setResults] = useState([]);
   const [partialResults, setPartialResults] = useState([]);
+  const [point, setpoint] = useState([]);
 
   //startRecognizing()
 
@@ -38,7 +40,7 @@ const App = () => {
     //  Voice.display_output = display_output;
     Voice.onSpeechVolumeChanged = onSpeechVolumeChanged;
 
-    startRecognizing();
+    // startRecognizing();
 
     return () => {
       //destroy the process after switching the screen
@@ -68,10 +70,13 @@ const App = () => {
     //Invoked when SpeechRecognizer is finished recognizing
     console.log('onSpeechResults: ', e.value);
     setResults(e.value);
-    const fileData = await readfile();
-    compareString(e, fileData);
-
-    // read_data_from_file();
+    // const fileData = await readfile();
+    const customdata = require('./config.json')
+    
+    const data = await compareString(e,customdata);
+    console.log(data)
+    setpoint(data);
+    // compareString(e, fileData);
   };
 
   const onSpeechPartialResults = e => {
@@ -146,7 +151,7 @@ const App = () => {
         <Text style={styles.titleText}>
           Speech to Text Conversion in React Native | Voice Recognition
         </Text>
-        <Text style={styles.textStyle}>Press mike to start Recognition</Text>
+        <Text style={styles.textStyle}>Press mic to start Recognition</Text>
         <View style={styles.headerContainer}>
           <Text style={styles.textWithSpaceStyle}>{`Started: ${started}`}</Text>
           <Text style={styles.textWithSpaceStyle}>{`End: ${end}`}</Text>
@@ -165,7 +170,8 @@ const App = () => {
             />
           </TouchableHighlight>
         }
-        <Text style={styles.textStyle}>Partial Results</Text>
+        <Text style={styles.textStyle}>{point}</Text>
+        <Text style={styles.textStyle}>Partial Results--></Text>
         <ScrollView>
           {partialResults.map((result, index) => {
             return (
@@ -176,7 +182,7 @@ const App = () => {
           })}
         </ScrollView>
 
-        <Text style={styles.textStyle}>Results</Text>
+        <Text style={styles.textStyle}>Results--></Text>
 
         <ScrollView style={{marginBottom: 42}}>
           {results.map((result, index) => {
@@ -250,6 +256,7 @@ const styles = StyleSheet.create({
   textStyle: {
     textAlign: 'center',
     padding: 12,
+    fontWeight: 'bold',
   },
   imageButton: {
     width: 50,

@@ -1,19 +1,8 @@
 import React, {Component} from 'react';
 
-var action = 'none',
-  location = 'none',
-  appliance = 'none',
-  property = 'none',
-  property_value = 'none',
-  property_units = 'none',
-  assistant_name = 'none';
+var action = 'none',location = 'none',appliance = 'none',property = 'none',property_value = 'none',property_units = 'none',assistant_name = 'none';
 
-var prev_action = 'none',
-  prev_property = 'none',
-  prev_appliance = 'none',
-  prev_location = 'none',
-  prev_property_value = 'none',
-  prev_property_units = 'none';
+var prev_action = 'none',prev_property = 'none',prev_appliance = 'none',prev_location = 'none',prev_property_value = 'none',prev_property_units = 'none';
 
 var retarry = {
   count: 0,
@@ -27,19 +16,19 @@ var threewrd = [];
 var fourwrd = [];
 var fivewrd = [];
 var res = [];
-
 var count = 0;
-
 var RNFS = require('react-native-fs');
 
-function readfile() {
-  var path = RNFS.ExternalDirectoryPath + '/Config.json';
-  return RNFS.readFile(path);
-  //console.log('READ FILE RESULT : ===> ',result);
-}
+  function readfile() {
+    var path = RNFS.ExternalDirectoryPath + '/Config.json';
+    return RNFS.readFile(path);
+    //console.log('READ FILE RESULT : ===> ',result);
+  }
 function compareString(e, data) {
   console.log('-------------------------------------------');
-  const filedata = JSON.parse(data);
+  const filedata = data;
+  // const filedata = JSON.parse(data);
+
   const stopwords = filedata?.stopwords;
   /*actions = filedata?.action,
   appliances = filedata?.appliance,
@@ -63,92 +52,17 @@ function compareString(e, data) {
       for (k = 1; k < stopwords.length; k++) {
         if (new RegExp('\\b' + stopwords[k] + '\\b').test(ret[i])) foundsw = 1;
       }
-      if (foundsw != 1) {
-        res[j] = ret[i];
-        j++;
-      }
+      if (foundsw != 1) {res[j] = ret[i];j++;}
     } //if (stopwords.includes(ret[i])!=true){res[j]=ret[i];j++;}
 
     console.log('com_str=', com_str);
     console.log('resvalue=', res);
-    for (i = 1; i < res.length; i++) {
-      twowrd[i - 1] = res[i - 1].concat(res[i]);
-    } //console.log(twowrd);
-    for (i = 2; i < res.length; i++) {
-      threewrd[i] = res[i - 2].concat(res[i - 1]);
-      threewrd[i] = threewrd[i].concat(res[i]);
-    } //console.log(threewrd);
-    for (i = 3; i < res.length; i++) {
-      fourwrd[i] = res[i - 3]
-        .concat(res[i - 2])
-        .concat(res[i - 1])
-        .concat(res[i]);
-    } //console.log(fourwrd);
-    for (i = 4; i < res.length; i++) {
-      fivewrd[i] = res[i - 4]
-        .concat(res[i - 3])
-        .concat(res[i - 2])
-        .concat(res[i - 1])
-        .concat(res[i]);
-    } //console.log(fivewrd);
+    for (i = 1; i < res.length; i++) {twowrd[i - 1] = res[i - 1].concat(res[i]);} 
+    for (i = 2; i < res.length; i++) {threewrd[i] = res[i - 2].concat(res[i - 1]);threewrd[i] = threewrd[i].concat(res[i]);} //console.log(threewrd);
+    for (i = 3; i < res.length; i++) {fourwrd[i] = res[i - 3].concat(res[i - 2]).concat(res[i - 1]).concat(res[i]);} //console.log(fourwrd);
+    for (i = 4; i < res.length; i++) {fivewrd[i] = res[i - 4].concat(res[i - 3]).concat(res[i - 2]).concat(res[i - 1]).concat(res[i]);} //console.log(fivewrd);
 
-    const match = checklist => {
-      var found = 0;
-      var wrd = '!';
-      for (i = 0; i < fivewrd.length; i++) {
-        if (found != 0) break;
-        if (checklist.includes(fivewrd[i]) == true) {
-          found = 1;
-          wrd = fivewrd[i];
-          fivewrd[i] = '-';
-          count += 1;
-        }
-      }
-      if (found == 0) {
-        for (i = 0; i < fourwrd.length; i++) {
-          if (found != 0) break;
-          if (checklist.includes(fourwrd[i]) == true) {
-            found = 1;
-            wrd = fourwrd[i];
-            fourwrd[i] = '-';
-            count += 1;
-          }
-        }
-      }
-      if (found == 0) {
-        for (i = 0; i < threewrd.length; i++) {
-          if (found != 0) break;
-          if (checklist.includes(threewrd[i]) == true) {
-            found = 1;
-            wrd = threewrd[i];
-            threewrd[i] = '-';
-            count += 1;
-          }
-        }
-      }
-      if (found == 0) {
-        for (i = 0; i < twowrd.length; i++) {
-          if (found != 0) break;
-          if (checklist.includes(twowrd[i]) == true) {
-            found = 1;
-            wrd = twowrd[i];
-            twowrd[i] = '-';
-            count += 1;
-          }
-        }
-      }
-      if (found == 0) {
-        for (i = 0; i < res.length; i++) {
-          if (found != 0) break;
-          if (checklist.includes(res[i]) == true) {
-            wrd = res[i];
-            res[i] = '-';
-            count += 1;
-          }
-        }
-      }
-      return wrd;
-    };
+ 
     assistant_name = match(filedata.assistant_name);
     // if(assistant_name =='!') {
 
@@ -161,19 +75,11 @@ function compareString(e, data) {
 
     if (action == 'again' || action == 'repeat') {
       // if action is again or repeat then loc= prevloc action = prevaction...etc //else  //prevloc=loc;prevaction=action;....
-      action = prev_action;
-      property = prev_property;
-      appliance = prev_appliance;
-      location = prev_location;
-      property_value = prev_property_value;
-      property_units = prev_property_units;
-    } else {
-      prev_action = action;
-      prev_location = location;
-      prev_appliance = appliance;
-      prev_property_value = property_value;
-      prev_property_units = property_units;
-    }
+      action = prev_action;property = prev_property;appliance = prev_appliance;location = prev_location;property_value = prev_property_value;property_units = prev_property_units;}
+      else 
+      {
+        prev_action = action;prev_location = location;prev_appliance = appliance;prev_property_value = property_value;prev_property_units = property_units;
+      }
 
     console.log('oldcount=', retarry.count, 'count=', count);
     if (retarry.count <= count) {
@@ -189,13 +95,27 @@ function compareString(e, data) {
   });
   //console.log('location=',retarry.location,'action=',retarry.action,'property=',retarry.propert,'property_value=',retarry.property_value);
   //console.log('appliance=',retarry.appliance,'property_units=',retarry.property_units,'count=',retarry.count);
-  console.log('final action=', retarry.action);
-  console.log('final location=', retarry.location);
-  console.log('final appliance=', retarry.appliance);
-  console.log('final property=', retarry.property);
-  console.log('final property_value=', retarry.property_value);
-  console.log('final property_units=', retarry.property_units);
-  console.log('final count=', retarry.count);
+  // console.log('final action=', retarry.action);
+  // console.log('final location=', retarry.location);
+  // console.log('final appliance=', retarry.appliance);
+  // console.log('final property=', retarry.property);
+  // console.log('final property_value=', retarry.property_value);
+  // console.log('final property_units=', retarry.property_units);
+  // console.log('final count=', retarry.count);
+ let  result = 'Action='+ retarry.action + ',location='+ retarry.location+',Appliance='+ retarry.appliance+',Property='+retarry.property+',Property_Value='+retarry.property_value+',Property_Units='+ retarry.property_units;
+  return result ;
+
 }
+  const match = checklist => {
+    var found = 0;
+    var wrd = '!';
+    for (i = 0; i < fivewrd.length; i++) {if (found != 0) break;if (checklist.includes(fivewrd[i]) == true) {found = 1; wrd = fivewrd[i];fivewrd[i] = '-';count += 1;}}
+      if (found == 0) {for (i = 0; i < fourwrd.length; i++) {if (found != 0) break;if (checklist.includes(fourwrd[i]) == true) {found = 1;wrd = fourwrd[i];fourwrd[i] = '-';count += 1;}}}
+      if (found == 0) {for (i = 0; i < threewrd.length; i++) {if (found != 0) break;if (checklist.includes(threewrd[i]) == true) {found = 1;wrd = threewrd[i];threewrd[i] = '-';count += 1;}}}
+      if (found == 0) {for (i = 0; i < twowrd.length; i++) {if (found != 0) break;if (checklist.includes(twowrd[i]) == true) {found = 1;wrd = twowrd[i];twowrd[i] = '-';count += 1;}}}
+      if (found == 0) {for (i = 0; i < res.length; i++) {if (found != 0) break;
+      if (checklist.includes(res[i]) == true) {wrd = res[i];res[i] = '-'; count += 1; } } }
+      return wrd;
+  };
 
 export {readfile, compareString};
